@@ -24,7 +24,9 @@ app.use(express.json());
 //   allowedHeaders: ['Content-Type']
 // }));
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+}));
 
 
 // Middleware to parse cookies
