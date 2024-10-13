@@ -1,8 +1,11 @@
 import { object, string, date } from 'yup';
 import { GENDER_TYPES } from '../utils/constants';
 
+const capitalizeFirstLetters = (value: string) =>
+  value.replace(/\b\w/g, (char) => char.toUpperCase());
+
 export const signupSchema = object({
-  name: string().required(),
+  name: string().required().transform((value) => capitalizeFirstLetters(value.trim())),
   email: string().email().required(),
   dob: date().required().max(new Date(), "Date of birth cannot be in the future"), // Ensure dob is not in the future
   gender: string()
