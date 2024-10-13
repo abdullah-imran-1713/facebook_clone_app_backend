@@ -1,19 +1,24 @@
 import { object, string, date } from 'yup';
 import { GENDER_TYPES } from '../utils/constants';
 
+// Helper function to capitalize the first letter of each word
 const capitalizeFirstLetters = (value: string) =>
-  value.replace(/\b\w/g, (char) => char.toUpperCase());
+  value
+    .toLowerCase() // Convert everything to lowercase first
+    .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter of each word
 
 export const signupSchema = object({
-  name: string().required().transform((value) => capitalizeFirstLetters(value.trim())),
-  email: string().email().required(),
+  name: string()
+    .required('Name is required')
+    .transform((value) => capitalizeFirstLetters(value.trim())), // Capitalize first letter of each word
+  email: string().email().required('Email is required'),
   dob: date().required().max(new Date(), "Date of birth cannot be in the future"), // Ensure dob is not in the future
   gender: string()
     .transform((value) => value.trim().toLowerCase()) // Remove whitespace and convert to lowercase
-    .oneOf(GENDER_TYPES).required(),
+    .oneOf(GENDER_TYPES).required('Gender is required'),
   password: string()
     .required('Password is required')
-    .test('isValidPassword', 'Password must be at least 8 characters and at most 20 characters. Password must include at least one lowercase, at least one uppercase letter and at least one digit and at least one special character (@$!%*?&.)', (value) => {
+    .test('isValidPassword', 'Password must be at least 8 characters and at most 20 characters. Password must include at least one lowercase, at least one uppercase letter, at least one digit, and at least one special character (@$!%*?&.)', (value) => {
       const password = value || "";
       const hasLowercase = /[a-z]/.test(password);
       const hasUppercase = /[A-Z]/.test(password);
@@ -34,4 +39,3 @@ export let loginSchema = object({
   email: string().email().required('Email is required'),
   password: string().required('Password is required'),
 });
-
